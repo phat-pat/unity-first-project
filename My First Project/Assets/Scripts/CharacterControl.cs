@@ -12,15 +12,15 @@ public class CharacterControl : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            thePlayer.GetComponent<Animator>().Play("Charge_Attack_alt");
+            thePlayer.GetComponent<Animator>().Play("Charge Attack");
         }
         if (Input.GetKeyDown(KeyCode.X))
         {
-            thePlayer.GetComponent<Animator>().Play("Blast_Attack_alt");
+            thePlayer.GetComponent<Animator>().Play("Blast Attack");
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
-            thePlayer.GetComponent<Animator>().Play("Death_alt");
+            thePlayer.GetComponent<Animator>().Play("Death");
         }
 
     }

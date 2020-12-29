@@ -142,7 +142,7 @@ TextureImporter:
         y: 0
         width: 231
         height: 190
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -163,7 +163,7 @@ TextureImporter:
         y: 0
         width: 231
         height: 190
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -184,7 +184,7 @@ TextureImporter:
         y: 0
         width: 231
         height: 190
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -205,7 +205,7 @@ TextureImporter:
         y: 0
         width: 231
         height: 190
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -219,27 +219,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Attack2_7
-      rect:
-        serializedVersion: 2
-        x: 1617
-        y: 0
-        width: 231
-        height: 190
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fe9016085c3d47940800000000000000
-      internalID: 5293088307283036655
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Attack2_0
       rect:
         serializedVersion: 2
@@ -247,7 +226,7 @@ TextureImporter:
         y: 0
         width: 231
         height: 190
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -268,7 +247,7 @@ TextureImporter:
         y: 0
         width: 231
         height: 190
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -289,7 +268,7 @@ TextureImporter:
         y: 0
         width: 231
         height: 190
-      alignment: 0
+      alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
@@ -298,6 +277,27 @@ TextureImporter:
       bones: []
       spriteID: 12d3eb048f66bc040800000000000000
       internalID: 4668938655123782945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack2_7
+      rect:
+        serializedVersion: 2
+        x: 1617
+        y: 0
+        width: 231
+        height: 190
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe9016085c3d47940800000000000000
+      internalID: 5293088307283036655
       vertices: []
       indices: 
       edges: []
