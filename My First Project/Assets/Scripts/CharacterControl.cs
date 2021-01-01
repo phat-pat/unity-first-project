@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System;
 
 public class CharacterControl : MonoBehaviour
 {
 
-    public GameObject p1, p2;
+    public GameObject p1, p2, mana1, mana2, GameOver, charge1, charge2;
     public float countdown;
-    private string p1choice, p2choice;
+    private string p1choice = "Blast", p2choice = "Blast";
     private int p1power = 0, p2power = 0;
     private bool gameOver;
     private float startTime;
@@ -17,7 +19,11 @@ public class CharacterControl : MonoBehaviour
         startTime = Time.time;
         p1anim = p1.GetComponent<Animator>();
         p2anim = p2.GetComponent<Animator>();
+        GameOver.SetActive(false);
+        charge1.GetComponent<ParticleSystem>().Stop();
+        charge2.GetComponent<ParticleSystem>().Stop();
     }
+
     void Update() {
         if (!gameOver) {
             if (Time.time - startTime < countdown) {
@@ -33,6 +39,7 @@ public class CharacterControl : MonoBehaviour
                 
                 switch (p1choice) {
                     case "Charge":
+                        charge1.GetComponent<ParticleSystem>().Play();
                         p1power++;
                         if (p2choice == "Blast") { 
                             p1anim.SetBool("Dead", true);
@@ -55,10 +62,15 @@ public class CharacterControl : MonoBehaviour
                     default:
                         break;
                 }
-                if (p2choice == "Charge") p2power++;
+                if (p2choice == "Charge") {
+                    p2power++;
+                    charge2.GetComponent<ParticleSystem>().Play();
+                }
                 if (p2choice == "Blast") p2power = 0;
                 if (p1anim.GetBool("Dead") || p2anim.GetBool("Dead")) gameOver = true;
                 if (!gameOver) startTime = Time.time;
+                else GameOver.SetActive(true);
+                mana1.GetComponent<Text>().text = p1power.ToString(); mana2.GetComponent<Text>().text = p2power.ToString();
             }
         }
     }
