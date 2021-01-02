@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using Random=UnityEngine.Random;
-public class CharacterControl : MonoBehaviour
+public class AI : MonoBehaviour
 {
 
     public GameObject p1, p2, mana1, mana2, GameOver, charge1, charge2;
