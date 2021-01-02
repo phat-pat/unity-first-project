@@ -7,10 +7,11 @@ using System;
 public class CharacterControl : MonoBehaviour
 {
 
-    public GameObject p1, p2, mana1, mana2, GameOver, charge1, charge2;
+    public GameObject p1, p2, mana1, mana2, GameOver, charge1, charge2, countdownObj;
     public float countdown;
-    private string p1choice = "Blast", p2choice = "Blast";
-    private int p1power = 0, p2power = 0;
+    public int gameMode; // 0 local, 1 computer, 2 multiplayer
+    private string p1choice, p2choice;
+    private int p1power, p2power;
     private bool gameOver;
     private float startTime;
     private Animator p1anim, p2anim;
@@ -22,17 +23,21 @@ public class CharacterControl : MonoBehaviour
         GameOver.SetActive(false);
         charge1.GetComponent<ParticleSystem>().Stop();
         charge2.GetComponent<ParticleSystem>().Stop();
+        gameMode = 1;
+        p1power = 1; p2power = 1; p1choice = "Blast"; p2choice = "Blast";
     }
 
     void Update() {
         if (!gameOver) {
-            if (Time.time - startTime < countdown) {
+            if (Time.time < startTime) {
+                if (countdownObj.activeSelf) countdownObj.SetActive(false);
+            } else if (Time.time - startTime < countdown) {
+                if (!countdownObj.activeSelf) countdownObj.SetActive(true);
+                countdownObj.GetComponent<Text>().text = Math.Ceiling(countdown - (Time.time - startTime)).ToString();
                 if (Input.GetKeyDown(KeyCode.Z)) p1choice = "Blast";
                 if (Input.GetKeyDown(KeyCode.X)) p1choice = "Charge";
                 if (Input.GetKeyDown(KeyCode.C)) p1choice = "Shield";
-                if (Input.GetKeyDown(KeyCode.LeftArrow)) p2choice = "Blast";
-                if (Input.GetKeyDown(KeyCode.DownArrow)) p2choice = "Charge";
-                if (Input.GetKeyDown(KeyCode.RightArrow)) p2choice = "Shield";
+                GetP2Inputs(gameMode);
             } else {
                 p1anim.SetTrigger(p1choice);
                 p2anim.SetTrigger(p2choice);
@@ -68,10 +73,30 @@ public class CharacterControl : MonoBehaviour
                 }
                 if (p2choice == "Blast") p2power = 0;
                 if (p1anim.GetBool("Dead") || p2anim.GetBool("Dead")) gameOver = true;
-                if (!gameOver) startTime = Time.time;
-                else GameOver.SetActive(true);
                 mana1.GetComponent<Text>().text = p1power.ToString(); mana2.GetComponent<Text>().text = p2power.ToString();
+                if (!gameOver) {
+                    startTime = Time.time + 2;
+                } else {
+                    countdownObj.SetActive(false);
+                }
             }
+        }
+    }
+
+    void GetP2Inputs(int gameMode) {
+        switch (gameMode) {
+            case 0: // Local vs. AI
+                break;
+            case 1: // Local vs. Friend
+                if (Input.GetKeyDown(KeyCode.LeftArrow)) p2choice = "Blast";
+                if (Input.GetKeyDown(KeyCode.DownArrow)) p2choice = "Charge";
+                if (Input.GetKeyDown(KeyCode.RightArrow)) p2choice = "Shield";
+                break;
+            case 2: // Online vs. Friend
+                break;
+            default:
+                break;
+
         }
     }
 }
