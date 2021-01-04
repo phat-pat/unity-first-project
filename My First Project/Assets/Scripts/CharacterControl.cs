@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-
+using Random=UnityEngine.Random;
 public class CharacterControl : MonoBehaviour
 {
 
@@ -23,7 +23,7 @@ public class CharacterControl : MonoBehaviour
         GameOver.SetActive(false);
         charge1.GetComponent<ParticleSystem>().Stop();
         charge2.GetComponent<ParticleSystem>().Stop();
-        gameMode = 1;
+        gameMode = 0;
         p1power = 1; p2power = 1; p1choice = "Blast"; p2choice = "Blast";
     }
 
@@ -93,6 +93,7 @@ public class CharacterControl : MonoBehaviour
     void GetP2Inputs(int gameMode) {
         switch (gameMode) {
             case 0: // Local vs. AI
+                GetAiMove(p2power);
                 break;
             case 1: // Local vs. Friend
                 if (Input.GetKeyDown(KeyCode.LeftArrow)) p2choice = "Blast";
@@ -106,4 +107,29 @@ public class CharacterControl : MonoBehaviour
 
         }
     }
+    void GetAiMove(int p2power) {
+        if (p2power < 1) {
+            if(Random.Range(0,1) == 0){
+                p2choice = "Charge";
+            }
+            else{
+                p2choice = "Shield";
+            }
+        }
+        if (p2power >= 1){
+            if(Random.Range(0,2) == 0){
+                p2choice = "Shield";
+            }
+            else if(Random.Range(0,2) == 1){
+                p2choice = "Charge";
+            }
+            else{
+                p2choice = "Blast";
+            }
+        }
+        if(p2power >= 3){
+            p2choice = "Blast";
+        }
+    }
 }
+    
