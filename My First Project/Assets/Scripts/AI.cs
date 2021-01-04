@@ -28,6 +28,7 @@ public class AI : MonoBehaviour
         p2choice = "Blast";
     }
 
+    
     void Update() {
         if (!gameOver) {
             if (Time.time - startTime < countdown) {
@@ -35,28 +36,7 @@ public class AI : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.X)) p1choice = "Charge";
                 if (Input.GetKeyDown(KeyCode.C)) p1choice = "Shield";
                 // Ai Section begin
-                if (p2power < 1) {
-                    if(Random.Range(0,1) == 0){
-                        p2choice = "Charge";
-                    }
-                    else{
-                        p2choice = "Shield";
-                    }
-                }
-                if (p2power >= 1){
-                    if(Random.Range(0,3) == 0){
-                        p2choice = "Shield";
-                    }
-                    else if(Random.Range(0,4) < 2){
-                        p2choice = "Shield";
-                    }
-                    else{
-                        p2choice = "Blast";
-                    }
-                if(p2power >= 3){
-                    p2choice = "Blast";
-                }
-                }
+
                 //if (Input.GetKeyDown(KeyCode.LeftArrow)) p2choice = "Blast";
                 //if (Input.GetKeyDown(KeyCode.DownArrow)) p2choice = "Charge";
                 //if (Input.GetKeyDown(KeyCode.RightArrow)) p2choice = "Shield";

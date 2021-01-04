@@ -7,6 +7,6 @@ public class StartButton : MonoBehaviour
 {
     public void NextScene()
     {
-        SceneManager.LoadScene("Hill");
+        SceneManager.LoadScene("GameModeScreen");
     }
 }
