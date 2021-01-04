@@ -4,23 +4,26 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using Random=UnityEngine.Random;
-public class CharacterControl : MonoBehaviour
+using Mirror;
+public class CharacterControl : NetworkBehaviour
 {
 
-    public GameObject p1, p2, mana1, mana2, GameOver, charge1, charge2, countdownObj;
+    public GameObject readyObj, p1, p2, mana1, mana2, GameOver, charge1, charge2, countdownObj;
     public float countdown;
     public int gameMode; // 0 local, 1 computer, 2 multiplayer
+    [SyncVar]
     private string p1choice, p2choice;
     private int p1power, p2power;
-    private bool gameOver;
+    private bool ready, gameOver, haveAIMove;
     private float startTime;
     private Animator p1anim, p2anim;
 
     void Start() {
-        startTime = Time.time;
+        readyObj.SetActive(true);
         p1anim = p1.GetComponent<Animator>();
         p2anim = p2.GetComponent<Animator>();
         GameOver.SetActive(false);
+        countdownObj.SetActive(false);
         charge1.GetComponent<ParticleSystem>().Stop();
         charge2.GetComponent<ParticleSystem>().Stop();
         gameMode = 0;
@@ -28,7 +31,11 @@ public class CharacterControl : MonoBehaviour
     }
 
     void Update() {
-        if (!gameOver) {
+        if (!ready && !readyObj.activeSelf) {
+            ready = true;
+            startTime = Time.time;
+        }
+        if (!gameOver && ready) {
             if (Input.GetKeyDown(KeyCode.Z)) p1choice = "Blast";
             if (Input.GetKeyDown(KeyCode.X)) p1choice = "Charge";
             if (Input.GetKeyDown(KeyCode.C)) p1choice = "Shield";
@@ -44,10 +51,6 @@ public class CharacterControl : MonoBehaviour
                 
                 switch (p1choice) {
                     case "Blast":
-                        if (p1power == 0) break;
-                        if (p2choice == "Charge") {
-                            p2anim.SetBool("Dead", true);
-                        }
                         if (p2choice == "Blast") {
                             if (p1power > p2power) {
                                 p2anim.SetBool("Dead", true);
@@ -55,6 +58,10 @@ public class CharacterControl : MonoBehaviour
                             if (p1power < p2power) {
                                 p1anim.SetBool("Dead", true);
                             }
+                        }
+                        if (p1power == 0) break;
+                        if (p2choice == "Charge") {
+                            p2anim.SetBool("Dead", true);
                         }
                         if (p2choice == "Shield" && p1power >= 3)
                             p2anim.SetBool("Dead", true);
@@ -64,7 +71,7 @@ public class CharacterControl : MonoBehaviour
                     case "Charge":
                         charge1.GetComponent<ParticleSystem>().Play();
                         p1power++;
-                        if (p2choice == "Blast") p1anim.SetBool("Dead", true);
+                        if (p2choice == "Blast" && p2power > 0) p1anim.SetBool("Dead", true);
                         break;
                     
                     case "Shield":
@@ -86,21 +93,25 @@ public class CharacterControl : MonoBehaviour
                 } else {
                     countdownObj.SetActive(false);
                 }
+                haveAIMove = false;
             }
         }
     }
 
     void GetP2Inputs(int gameMode) {
         switch (gameMode) {
-            case 0: // Local vs. AI
-                GetAiMove(p2power);
+            case 0: // Local Multiplayer
+                if (!haveAIMove) {
+                    GetAiMove(p2power);
+                    haveAIMove = true;
+                }
                 break;
-            case 1: // Local vs. Friend
+            case 1: // Local vs. AI
                 if (Input.GetKeyDown(KeyCode.LeftArrow)) p2choice = "Blast";
                 if (Input.GetKeyDown(KeyCode.DownArrow)) p2choice = "Charge";
                 if (Input.GetKeyDown(KeyCode.RightArrow)) p2choice = "Shield";
                 break;
-            case 2: // Online vs. Friend
+            case 2: // Online Multiplayer
                 break;
             default:
                 break;
