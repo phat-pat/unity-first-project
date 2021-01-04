@@ -47,9 +47,15 @@ public class AI : MonoBehaviour
                     if(Random.Range(0,3) == 0){
                         p2choice = "Shield";
                     }
+                    else if(Random.Range(0,4) < 2){
+                        p2choice = "Shield";
+                    }
                     else{
                         p2choice = "Blast";
                     }
+                if(p2power >= 3){
+                    p2choice = "Blast";
+                }
                 }
                 //if (Input.GetKeyDown(KeyCode.LeftArrow)) p2choice = "Blast";
                 //if (Input.GetKeyDown(KeyCode.DownArrow)) p2choice = "Charge";
