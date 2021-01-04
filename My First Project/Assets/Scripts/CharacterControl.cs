@@ -26,7 +26,7 @@ public class CharacterControl : NetworkBehaviour
         countdownObj.SetActive(false);
         charge1.GetComponent<ParticleSystem>().Stop();
         charge2.GetComponent<ParticleSystem>().Stop();
-        gameMode = 0;
+        gameMode = GameSelect.GlobalGame;
         p1power = 1; p2power = 1; p1choice = "Blast"; p2choice = "Blast";
     }
 
@@ -101,15 +101,15 @@ public class CharacterControl : NetworkBehaviour
     void GetP2Inputs(int gameMode) {
         switch (gameMode) {
             case 0: // Local Multiplayer
+                if (Input.GetKeyDown(KeyCode.LeftArrow)) p2choice = "Blast";
+                if (Input.GetKeyDown(KeyCode.DownArrow)) p2choice = "Charge";
+                if (Input.GetKeyDown(KeyCode.RightArrow)) p2choice = "Shield";
+                break;
+            case 1: // Local vs. AI
                 if (!haveAIMove) {
                     GetAiMove(p2power);
                     haveAIMove = true;
                 }
-                break;
-            case 1: // Local vs. AI
-                if (Input.GetKeyDown(KeyCode.LeftArrow)) p2choice = "Blast";
-                if (Input.GetKeyDown(KeyCode.DownArrow)) p2choice = "Charge";
-                if (Input.GetKeyDown(KeyCode.RightArrow)) p2choice = "Shield";
                 break;
             case 2: // Online Multiplayer
                 break;

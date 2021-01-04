@@ -15729,7 +15729,7 @@ MonoBehaviour:
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 0}
-  autoCreatePlayer: 1
+  autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs: []
 --- !u!4 &1033948046
@@ -15792,6 +15792,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c308899bfe119e468b995850358710d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   readyObj: {fileID: 1776820915}
   p1: {fileID: 1489735392}
   p2: {fileID: 1028085793}
