@@ -29,32 +29,26 @@ public class CharacterControl : MonoBehaviour
 
     void Update() {
         if (!gameOver) {
+            if (Input.GetKeyDown(KeyCode.Z)) p1choice = "Blast";
+            if (Input.GetKeyDown(KeyCode.X)) p1choice = "Charge";
+            if (Input.GetKeyDown(KeyCode.C)) p1choice = "Shield";
+            GetP2Inputs(gameMode);
             if (Time.time < startTime) {
                 if (countdownObj.activeSelf) countdownObj.SetActive(false);
             } else if (Time.time - startTime < countdown) {
                 if (!countdownObj.activeSelf) countdownObj.SetActive(true);
                 countdownObj.GetComponent<Text>().text = Math.Ceiling(countdown - (Time.time - startTime)).ToString();
-                if (Input.GetKeyDown(KeyCode.Z)) p1choice = "Blast";
-                if (Input.GetKeyDown(KeyCode.X)) p1choice = "Charge";
-                if (Input.GetKeyDown(KeyCode.C)) p1choice = "Shield";
-                GetP2Inputs(gameMode);
             } else {
-                p1anim.SetTrigger(p1choice);
-                p2anim.SetTrigger(p2choice);
+                p1anim.Play(p1choice);
+                p2anim.Play(p2choice);
                 
                 switch (p1choice) {
-                    case "Charge":
-                        charge1.GetComponent<ParticleSystem>().Play();
-                        p1power++;
-                        if (p2choice == "Blast") { 
-                            p1anim.SetBool("Dead", true);
-                        }
-                        break;
                     case "Blast":
+                        if (p1power == 0) break;
                         if (p2choice == "Charge") {
                             p2anim.SetBool("Dead", true);
                         }
-                        if (p2choice == "Charge") {
+                        if (p2choice == "Blast") {
                             if (p1power > p2power) {
                                 p2anim.SetBool("Dead", true);
                             } 
@@ -62,8 +56,21 @@ public class CharacterControl : MonoBehaviour
                                 p1anim.SetBool("Dead", true);
                             }
                         }
+                        if (p2choice == "Shield" && p1power >= 3)
+                            p2anim.SetBool("Dead", true);
                         p1power = 0;
                         break;
+
+                    case "Charge":
+                        charge1.GetComponent<ParticleSystem>().Play();
+                        p1power++;
+                        if (p2choice == "Blast") p1anim.SetBool("Dead", true);
+                        break;
+                    
+                    case "Shield":
+                        if (p2power >= 3) p1anim.SetBool("Dead", true);
+                        break;
+
                     default:
                         break;
                 }
