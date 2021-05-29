@@ -21,6 +21,6 @@ public class GameSelect : MonoBehaviour
      public void SetGameModeOnline()
     {
         GlobalGame = 2;
-        SceneManager.LoadScene("Hill MP");
+        SceneManager.LoadScene("Hill");
     }
 }
