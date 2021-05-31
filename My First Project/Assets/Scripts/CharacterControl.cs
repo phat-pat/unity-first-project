@@ -13,7 +13,7 @@ public class CharacterControl : MonoBehaviour
   public int gameMode, player; // 0 local, 1 computer, 2 multiplayer
   private string p1choice, p2choice;
   private int p1power, p2power;
-  private bool ready, gameOver, haveAIMove, uploaded, downloaded;
+  private bool ready, gameOver, haveAIMove, uploaded;
   private Animator p1anim, p2anim;
 
   void Start() {
@@ -32,36 +32,30 @@ public class CharacterControl : MonoBehaviour
     if (!ready && !readyObj.activeSelf) {
       ready = true;
       startTime = Time.time;
-      Debug.Log(startTime);
     }
     if (!gameOver && ready) {
-      if (Input.GetKeyDown(KeyCode.Z)) p1choice = "Blast";
-      if (Input.GetKeyDown(KeyCode.X)) p1choice = "Charge";
-      if (Input.GetKeyDown(KeyCode.C)) p1choice = "Shield";
+      if (!uploaded) {
+        if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.C))
+          Debug.LogError("Responding to button press");
+        if (Input.GetKeyDown(KeyCode.Z)) p1choice = "Blast";
+        if (Input.GetKeyDown(KeyCode.X)) p1choice = "Charge";
+        if (Input.GetKeyDown(KeyCode.C)) p1choice = "Shield";
+      }
       GetP2Inputs(gameMode);
       if (Time.time < startTime) {
+        if (uploaded && gameMode == 2) { uploaded = false; }
         if (countdownObj.activeSelf) countdownObj.SetActive(false);
       } else if (Time.time - startTime < countdown) {
         if (!countdownObj.activeSelf) countdownObj.SetActive(true);
         countdownObj.GetComponent<Text>().text = Math.Ceiling(countdown - (Time.time - startTime)).ToString();
-      // Networking: add 1sec buffer after time cutoff to send p1choice and receive p2choice
+      // Networking: add buffer after time cutoff to send p1choice and receive p2choice
       } else if (gameMode == 2 && Time.time - startTime < countdown + 2) {
-        // Upload in first half
-        if (Time.time - startTime - countdown < 1) {
           if (!uploaded) {
-            Debug.Log(p1choice);
-            StartCoroutine(Send());
+            countdownObj.GetComponent<Text>().text = "0";
+            float temp = Time.time;
             uploaded = true;
-            downloaded = false;
+            StartCoroutine(Send(temp));
           }
-        // Download in second half
-        } else {
-          if (!downloaded) {
-            StartCoroutine(Receive());
-            uploaded = false;
-            downloaded = true;
-          }
-        }
       } else {
         p1anim.Play(p1choice);
         p2anim.Play(p2choice);
@@ -160,7 +154,7 @@ public class CharacterControl : MonoBehaviour
     }
   }
 
-  IEnumerator Send() {
+  IEnumerator Send(float time) {
     WWWForm form = new WWWForm();
     form.AddField("player", player);
     form.AddField("input", p1choice);
@@ -170,23 +164,31 @@ public class CharacterControl : MonoBehaviour
 
     if (www.result != UnityWebRequest.Result.Success)
     {
-      Debug.Log(www.error);
+      Debug.LogError(www.error);
     }
     else
     {
-      Debug.Log("Successfully sent data.");
+      Debug.LogError("Successfully sent " + p1choice);
+      StartCoroutine(Receive(time));
     }
   }
-  IEnumerator Receive() {
-    WWWForm form = new WWWForm();
-    form.AddField("player", player);
-    UnityWebRequest www = UnityWebRequest.Post("https://patrickday.dev/standoff/receive", form);
-    yield return www.SendWebRequest();
+  IEnumerator Receive(float time) {
+    while (true) {
+      WWWForm form = new WWWForm();
+      form.AddField("player", player);
+      UnityWebRequest www = UnityWebRequest.Post("https://patrickday.dev/standoff/receive", form);
+      yield return www.SendWebRequest();
 
-    if (www.result != UnityWebRequest.Result.Success) { Debug.Log(www.error); }
-    else { 
-    Debug.Log("Successfully received data.");
-    p2choice = www.downloadHandler.text;
+      if (www.result != UnityWebRequest.Result.Success) { Debug.LogError(www.error); }
+      else { 
+        if (www.downloadHandler.text != "Waiting on Other Player") {
+          p2choice = www.downloadHandler.text;
+          Debug.LogError("Successfully received " + p2choice);
+          Debug.LogError("Round trip time: " + (Time.time - time)*1000 + " ms");
+          break;
+        }
+      }
+      yield return new WaitForSeconds(0.25f);
     }
   }
 }
